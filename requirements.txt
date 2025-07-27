@@ -1,0 +1,12 @@
+streamlit
+groq
+requests
+gTTS
+pdfplumber
+python-docx
+PyPDF2
+sentence-transformers
+faiss-cpu
+langdetect
+langcodes
+tiktoken
