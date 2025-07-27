@@ -10,3 +10,4 @@ faiss-cpu
 langdetect
 langcodes
 tiktoken
+speech_recognition
