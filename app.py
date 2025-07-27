@@ -10,7 +10,8 @@ import base64
 
 # ========================== Config ==========================
 st.set_page_config(page_title="Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
-API_KEY = "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"
+# API_KEY = "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"
+API-KEY = 'API_Key'
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 JSON_FILE = "data.json"
 
