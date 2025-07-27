@@ -9,5 +9,5 @@ sentence-transformers
 faiss-cpu
 langdetect
 langcodes
-speech_recognition
+SpeechRecognition
 tiktoken==0.6.0
