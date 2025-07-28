@@ -8,10 +8,10 @@ from gtts import gTTS
 from langdetect import detect
 import base64
 
+
 # ========================== Config ==========================
 st.set_page_config(page_title="Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
-# API_KEY = "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"
-API_KEY = st.secrets["API_Key"]
+API_KEY = "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"
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 JSON_FILE = "data.json"
 
@@ -42,17 +42,22 @@ def transcribe_audio(audio_file):
 
 def build_prompt(question, extracted_json, language):
     instruction = {
-        "english": "You are an emergency first-aid assistant. First, answer using the JSON data provided. Then, offer your own tips and warnings. Be clear and use bullet points.",
-        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ پہلے JSON ڈیٹا سے جواب دیں، پھر اپنی معلومات سے مزید ہدایات اور احتیاطی تدابیر دیں۔ جواب نکات کی صورت میں دیں۔",
+        "english": "You are an emergency first-aid assistant. If any structured data is provided, use it first. Then offer your own tips. Be clear and use bullet points.",
+        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ اگر کوئی ڈیٹا دیا گیا ہو تو پہلے اس کا استعمال کریں، پھر اپنی ہدایات دیں۔ جواب نکات کی صورت میں دیں۔",
     }
-    return f"{instruction[language]}\n\nUser asked: {question}\n\nJSON data:\n{json.dumps(extracted_json, ensure_ascii=False)}"
+
+    if extracted_json:
+        return f"{instruction[language]}\n\nUser asked: {question}\n\nRelevant emergency information:\n{json.dumps(extracted_json, ensure_ascii=False)}"
+    else:
+        return f"{instruction[language]}\n\nUser asked: {question}"
+
 
 def search_json(query):
     results = []
     for entry in data:
-        if query.lower() in entry["emergency_type"].lower():
+        if query.lower() in str(entry.get("emergency_type", "")).lower():
             results.append(entry)
-    return results if results else [{"note": "No exact match found in JSON."}]
+    return results
 
 def generate_answer(prompt):
     client = Groq(api_key=API_KEY)
@@ -76,7 +81,7 @@ def play_audio(path):
     with open(path, "rb") as audio_file:
         audio_bytes = audio_file.read()
         b64 = base64.b64encode(audio_bytes).decode()
-        st.markdown(f'<audio controls autoplay><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
+        st.markdown(f'<audio controls><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
 
 # ========================== Custom CSS ==========================
 st.markdown("""
@@ -109,6 +114,14 @@ else:
     user_query = st.text_input("Type your emergency question:")
 
 # ========================== Main Processing ==========================
+
+# Initialize variables
+json_match = []
+lang = ""
+prompt = ""
+ai_output = ""
+audio_file = None
+
 if st.button("🚑 Get Emergency Help") and user_query:
     with st.spinner("Analyzing your request..."):
         lang = detect_language(user_query)
@@ -117,11 +130,46 @@ if st.button("🚑 Get Emergency Help") and user_query:
         ai_output = generate_answer(prompt)
         audio_file = text_to_audio(ai_output, lang)
 
-    st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
-    st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
 
-    st.markdown('<div class="section">🤖 Assistant Guidance</div>', unsafe_allow_html=True)
-    st.markdown(f"<div class='json-box'>{ai_output}</div>", unsafe_allow_html=True)
+    # Show emergency data only if match found
+    if json_match:
+        st.markdown('<div class="section">📄 Emergency Information</div>', unsafe_allow_html=True)
+        st.markdown('<div class="json-box">', unsafe_allow_html=True)
 
-    st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
-    play_audio(audio_file)
+        for item in json_match:
+            if isinstance(item, dict):
+                for key, value in item.items():
+                    if isinstance(value, (dict, list)):
+                        st.markdown(f"**{key.capitalize().replace('_', ' ')}:**")
+                        st.code(json.dumps(value, indent=4, ensure_ascii=False), language="json")
+                    else:
+                        st.markdown(f"**{key.capitalize().replace('_', ' ')}:** {value}")
+            else:
+                st.markdown(f"- {item}")
+
+        st.markdown('</div>', unsafe_allow_html=True)
+
+
+
+    # AI answer section
+    st.markdown('<div class="section">☤ Emergency First Aid Guidance</div>', unsafe_allow_html=True)
+
+# ✅ Set direction based on detected language
+text_direction = "rtl" if lang == "urdu" else "ltr"
+text_align = "right" if lang == "urdu" else "left"
+
+# ✅ Apply direction + alignment to output box
+st.markdown(
+    f"<div class='json-box' style='direction: {text_direction}; text-align: {text_align};'>{ai_output}</div>",
+    unsafe_allow_html=True
+)
+
+
+    # Voice output
+    # Voice output
+if audio_file:
+        st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
+        play_audio(audio_file)
+
+
+
