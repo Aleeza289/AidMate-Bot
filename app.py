@@ -12,7 +12,7 @@ import base64
 # ========================== Config ==========================
 st.set_page_config(page_title="Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
 API_KEY = "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"
-MODEL = "llama3-70b-8192"
+MODEL = "llama3-8b-8192"  # Ya koi aur supported model
 JSON_FILE = "data.json"
 
 # ========================== Load JSON ==========================
