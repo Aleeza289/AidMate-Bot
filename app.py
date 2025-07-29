@@ -1,112 +1,81 @@
 import streamlit as st
-import json
 from groq import Groq
-from langdetect import detect
+import json
+import speech_recognition as sr
+import os
 
-# ========================== Config ==========================
-st.set_page_config(page_title="Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
-API_KEY = "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"
-MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
-JSON_FILE = "data.json"
+# ---------------------- CONFIG ----------------------
+st.set_page_config(page_title="AidMate Bot", layout="centered")
+st.title("🩺 AidMate - Emergency First Aid Assistant")
 
-# ========================== Load JSON ==========================
-@st.cache_data
-def load_json():
-    with open(JSON_FILE, "r", encoding="utf-8") as f:
-        return json.load(f)
+# ---------------------- Load JSON Emergency Data ----------------------
+with open("emergency_data.json", "r", encoding="utf-8") as f:
+    emergency_data = json.load(f)
 
-data = load_json()
-
-# ========================== Utility Functions ==========================
-def detect_language(text):
-    try:
-        lang = detect(text)
-        return "urdu" if lang == "ur" else "english"
-    except:
-        return "english"
-
-def build_prompt(question, extracted_json, language):
-    instruction = {
-        "english": "You are an emergency first-aid assistant. If any structured data is provided, use it first. Then offer your own tips. Be clear and use bullet points and emojis if helpful.",
-        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ اگر کوئی ڈیٹا دیا گیا ہو تو پہلے اس کا استعمال کریں، پھر اپنی ہدایات دیں۔ جواب نکات اور ایموجیز کی مدد سے واضح انداز میں دیں۔",
-    }
-
-    if extracted_json:
-        return f"{instruction[language]}\n\nUser asked: {question}\n\nRelevant emergency information:\n{json.dumps(extracted_json, ensure_ascii=False)}"
-    else:
-        return f"{instruction[language]}\n\nUser asked: {question}"
-
-def search_json(query):
-    results = []
-    for entry in data:
-        if query.lower() in str(entry.get("emergency_type", "")).lower():
-            results.append(entry)
-    return results
-
+# ---------------------- Groq Response Function ----------------------
 def generate_answer(prompt):
-    client = Groq(api_key=API_KEY)  # ✅ Fixed here
+    client = Groq()  # It uses the GROQ_API_KEY from environment variables
+
     response = client.chat.completions.create(
-        model=MODEL,
-        messages=[{"role": "user", "content": prompt}],
+        model="meta-llama/llama-4-scout-17b-16e-instruct",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
         temperature=0.7,
-        max_tokens=1024,
+        max_completion_tokens=1024,
         top_p=1,
-        stream=False,
+        stream=False
     )
+
     return response.choices[0].message.content
 
-# ========================== Custom CSS ==========================
-st.markdown("""
-    <style>
-        .title { font-size: 30px; font-weight: bold; color: #075985; }
-        .section { font-size: 22px; color: #0f172a; margin-top: 30px; }
-        .label { font-weight: bold; font-size: 18px; }
-        .json-box { background-color: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
-    </style>
-""", unsafe_allow_html=True)
+# ---------------------- Voice Input Function ----------------------
+def recognize_speech():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        st.info("🎙️ Speak now...")
+        audio = r.listen(source, timeout=5)
+    try:
+        text = r.recognize_google(audio)
+        return text
+    except sr.UnknownValueError:
+        return "Sorry, I could not understand your voice."
+    except sr.RequestError:
+        return "Sorry, speech recognition service is not working."
 
-# ========================== UI Layout ==========================
-st.markdown('<div class="title">🩺 Emergency First-Aid Assistant</div>', unsafe_allow_html=True)
-st.write("Ask your emergency question in **English or Urdu**. You can type your query below:")
+# ---------------------- Main Input Section ----------------------
+option = st.radio("Choose input method:", ["📝 Text", "🎤 Voice"])
 
-user_query = st.text_input("🔍 Type your emergency question:")
+if option == "📝 Text":
+    user_input = st.text_input("Enter your emergency situation:")
+elif option == "🎤 Voice":
+    if st.button("Start Recording"):
+        user_input = recognize_speech()
+        st.write("You said:", user_input)
+    else:
+        user_input = ""
 
-# ========================== Main Processing ==========================
-json_match = []
-lang = ""
-prompt = ""
-ai_output = ""
+# ---------------------- Process & Respond ----------------------
+if st.button("🚑 Get First Aid Guidance") and user_input:
+    matched_info = None
+    for condition in emergency_data["emergencies"]:
+        if condition["keyword"].lower() in user_input.lower():
+            matched_info = condition
+            break
 
-if st.button("🚑 Get Emergency Help") and user_query:
-    with st.spinner("Analyzing your request..."):
-        lang = detect_language(user_query)
-        json_match = search_json(user_query)
-        prompt = build_prompt(user_query, json_match, lang)
-        ai_output = generate_answer(prompt)
+    if matched_info:
+        st.subheader("📘 Emergency Information:")
+        st.write(matched_info["description"])
 
-    if json_match:
-        st.markdown('<div class="section">📄 Emergency Information</div>', unsafe_allow_html=True)
-        st.markdown('<div class="json-box">', unsafe_allow_html=True)
+        prompt = f"""Based on the following emergency: "{matched_info['description']}", provide clear and simple step-by-step first aid instructions. Respond in bullet points."""
+    else:
+        # ⚠️ Line removed as per your request – user won't know
+        prompt = f"""The user described an emergency as: "{user_input}". Provide first aid guidance in simple steps. Respond in bullet points."""
 
-        for item in json_match:
-            if isinstance(item, dict):
-                for key, value in item.items():
-                    if isinstance(value, (dict, list)):
-                        st.markdown(f"**{key.capitalize().replace('_', ' ')}:**")
-                        st.code(json.dumps(value, indent=4, ensure_ascii=False), language="json")
-                    else:
-                        st.markdown(f"**{key.capitalize().replace('_', ' ')}:** {value}")
-            else:
-                st.markdown(f"- {item}")
+    ai_output = generate_answer(prompt)
+    st.subheader("🤖 AI First Aid Guidance:")
+    st.write(ai_output)
 
-        st.markdown('</div>', unsafe_allow_html=True)
-
-    st.markdown('<div class="section">☤ Emergency First Aid Guidance</div>', unsafe_allow_html=True)
-
-    text_direction = "rtl" if lang == "urdu" else "ltr"
-    text_align = "right" if lang == "urdu" else "left"
-
-    st.markdown(
-        f"<div class='json-box' style='direction: {text_direction}; text-align: {text_align}; white-space: pre-wrap;'>{ai_output}</div>",
-        unsafe_allow_html=True
-    )
