@@ -42,16 +42,26 @@ def transcribe_audio(audio_file):
 
 def build_prompt(question, extracted_json, language):
     instruction = {
-        "english": "You are an emergency first-aid assistant. First, answer using the JSON data provided. Then, offer your own tips and warnings. Be clear and use bullet points.",
-        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ پہلے JSON ڈیٹا سے جواب دیں، پھر اپنی معلومات سے مزید ہدایات اور احتیاطی تدابیر دیں۔ جواب نکات کی صورت میں دیں۔",
+        "english": "You are an emergency first-aid assistant. First, answer using the provided emergency information. Then, offer your own tips and warnings. Be clear and use bullet points.",
+        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ پہلے دی گئی ایمرجنسی معلومات سے جواب دیں، پھر اپنی معلومات سے مزید ہدایات اور احتیاطی تدابیر دیں۔ جواب نکات کی صورت میں دیں۔",
     }
 
-    if extracted_json:  # Only add JSON if something was found
-        json_part = f"\n\nJSON data:\n{json.dumps(extracted_json, ensure_ascii=False)}"
+    if extracted_json:
+        pretty_info = ""
+        for item in extracted_json:
+            for key, value in item.items():
+                pretty_info += f"{key}:\n"
+                if isinstance(value, list):
+                    for v in value:
+                        pretty_info += f"- {v}\n"
+                else:
+                    pretty_info += f"{value}\n"
+        info_part = f"\n\nHere is some emergency information that may help:\n{pretty_info}"
     else:
-        json_part = ""
+        info_part = ""
 
-    return f"{instruction[language]}\n\nUser asked: {question}{json_part}"
+    return f"{instruction[language]}\n\nUser asked: {question}{info_part}"
+
 
 
 def search_json(query):
