@@ -124,7 +124,7 @@ if st.button("🚑 Get Emergency Help") and user_query:
         ai_output = generate_answer(prompt)
         audio_file = text_to_audio(ai_output, lang)
 
-    if json_match:
+if json_match:
     st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
     st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
 
