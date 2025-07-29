@@ -10,14 +10,14 @@ import base64
 # ========================== Config ==========================
 st.set_page_config(page_title="AidMate Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
 
-st.markdown(
-    """
-    <div style="text-align: center;">
-        <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" width="250">
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+# st.markdown(
+#     """
+#     <div style="text-align: center;">
+#         <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" width="250">
+#     </div>
+#     """,
+#     unsafe_allow_html=True
+# )
 
 API_KEY = "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"
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
@@ -168,17 +168,26 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ========================== Gradient Title ==========================
+# st.markdown("""
+#     <h2 style='
+#         background: linear-gradient(to right, #2563eb, #06b6d4);
+#         -webkit-background-clip: text;
+#         -webkit-text-fill-color: transparent;
+#         font-size: 36px;
+#         font-weight: 800;
+#         text-align: center;
+#         margin-top: 20px;
+#     '>AidMate - Smart First Aid Assistant</h2>
+# """, unsafe_allow_html=True)
+
+
 st.markdown("""
-    <h2 style='
-        background: linear-gradient(to right, #2563eb, #06b6d4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 36px;
-        font-weight: 800;
-        text-align: center;
-        margin-top: 20px;
-    '>AidMate - Smart First Aid Assistant</h2>
+<div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;'>
+    <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 60px;' />
+    <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
+</div>
 """, unsafe_allow_html=True)
+
 
 # ========================== Input UI ==========================
 st.write("Ask your emergency question in **English or Urdu**.")
