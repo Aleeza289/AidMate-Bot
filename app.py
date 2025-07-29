@@ -44,7 +44,7 @@ def search_json(query):
     return results
 
 def generate_answer(prompt):
-    client = Groq(api_key=API_KEY)
+    client = Groq(api_key=API_KEY)  # ✅ Fixed here
     response = client.chat.completions.create(
         model=MODEL,
         messages=[{"role": "user", "content": prompt}],
