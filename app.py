@@ -126,8 +126,8 @@ if st.button("🚑 Get Emergency Help") and user_query:
         audio_file = text_to_audio(ai_output, lang)
         
         if json_match:
-    st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
-    st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
+            st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
+            st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
 
 # Yeh dono cheezen hamesha dikhani chahiye, chahe JSON match ho ya nahi
 st.markdown('<div class="section">🤖 Assistant Guidance</div>', unsafe_allow_html=True)
