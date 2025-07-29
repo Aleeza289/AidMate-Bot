@@ -44,14 +44,22 @@ def build_prompt(question, extracted_json, language):
         "english": "You are an emergency first-aid assistant. First, answer using the JSON data provided. Then, offer your own tips and warnings. Be clear and use bullet points.",
         "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ پہلے JSON ڈیٹا سے جواب دیں، پھر اپنی معلومات سے مزید ہدایات اور احتیاطی تدابیر دیں۔ جواب نکات کی صورت میں دیں۔",
     }
-    return f"{instruction[language]}\n\nUser asked: {question}\n\nJSON data:\n{json.dumps(extracted_json, ensure_ascii=False)}"
+
+    if extracted_json:  # Only add JSON if something was found
+        json_part = f"\n\nJSON data:\n{json.dumps(extracted_json, ensure_ascii=False)}"
+    else:
+        json_part = ""
+
+    return f"{instruction[language]}\n\nUser asked: {question}{json_part}"
+
 
 def search_json(query):
     results = []
     for entry in data:
-        if query.lower() in entry["emergency_type"].lower():
+        emergency_type = entry.get("emergency_type", "")
+        if query.lower() in emergency_type.lower():
             results.append(entry)
-    return results if results else [{"note": "No exact match found in JSON."}]
+    return results  # Don't add fallback
 
 def generate_answer(prompt):
     client = Groq(api_key=API_KEY)
@@ -116,6 +124,7 @@ if st.button("🚑 Get Emergency Help") and user_query:
         ai_output = generate_answer(prompt)
         audio_file = text_to_audio(ai_output, lang)
 
+    if json_match:
     st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
     st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
 
