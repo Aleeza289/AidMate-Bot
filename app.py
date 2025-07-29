@@ -126,7 +126,7 @@ def play_audio(path):
 
 # ========================== Sidebar ==========================
 with st.sidebar:
-    st.image("https://aidmate-app.netlify.app/AidMate-removebg-preview.png", width=200)
+    st.image("https://aidmate-app.netlify.app/AidMate-removebg-preview.png", width=150)
     st.markdown("### 🩺 AidMate Assistant")
     st.markdown("Ask questions like:")
     st.markdown("- Burn treatment\n- Nose bleeding\n- Fracture steps")
