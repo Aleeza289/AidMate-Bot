@@ -131,7 +131,7 @@ with st.sidebar:
     st.markdown("Ask questions like:")
     st.markdown("- Burn treatment\n- Nose bleeding\n- Fracture steps")
     st.markdown("---")
-    st.markdown("# **Build For Emergency Support.**")
+    st.markdown("**Build For Emergency Support.**")
 
 # ========================== Custom CSS ==========================
 st.markdown("""
