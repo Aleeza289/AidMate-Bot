@@ -114,7 +114,21 @@ if st.button("🚑 Get Emergency Help") and user_query:
             st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
             st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
 
+    st.markdown("""
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu&display=swap" rel="stylesheet">
+""", unsafe_allow_html=True)
+    
+    
     st.markdown('<div class="section">🤖 Assistant Guidance</div>', unsafe_allow_html=True)
+
+# Urdu response ke liye RTL direction apply karein
+if lang == "urdu":
+    st.markdown(f"""
+    <div class='json-box' style='direction: rtl; text-align: right; font-family: "Noto Nastaliq Urdu", "Arial", sans-serif;'>
+        {ai_output}
+    </div>
+    """, unsafe_allow_html=True)
+else:
     st.markdown(f"<div class='json-box'>{ai_output}</div>", unsafe_allow_html=True)
 
     st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
