@@ -1,4 +1,6 @@
-import streamlit as st 
+
+
+import streamlit as st
 import json
 import speech_recognition as sr
 import tempfile
@@ -7,15 +9,7 @@ from groq import Groq
 from gtts import gTTS
 from langdetect import detect
 import base64
-from streamlit_webrtc import webrtc_streamer, WebRtcMode
-import av
-import numpy as np
-import wave
-import io
 
-# Custom base class since AudioProcessorBase is not available
-class AudioProcessorBase:
-    pass
 
 # ========================== Config ==========================
 st.set_page_config(page_title="Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
@@ -48,15 +42,18 @@ def transcribe_audio(audio_file):
         except:
             return ""
 
+
 def build_prompt(question, extracted_json, language):
     instruction = {
-        "english": "You are an emergency first-aid assistant. If any structured data is provided, use it first. Then offer your own tips. Be clear and use bullet points.",
-        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ اگر کوئی ڈیٹا دیا گیا ہو تو پہلے اس کا استعمال کریں، پھر اپنی ہدایات دیں۔ جواب نکات کی صورت میں دیں۔",
+        "english": "You are an emergency first-aid assistant. First, answer using the JSON data if available. Then, offer your own tips and warnings. Be clear and use bullet points.",
+        "urdu": "آپ ایک ایمرجنسی فرسٹ ایڈ اسسٹنٹ ہیں۔ اگر JSON ڈیٹا موجود ہو تو پہلے اس سے جواب دیں، پھر اپنی معلومات سے مزید ہدایات اور احتیاطی تدابیر دیں۔ جواب نکات کی صورت میں دیں۔",
     }
-    if extracted_json:
-        return f"{instruction[language]}\n\nUser asked: {question}\n\nRelevant emergency information:\n{json.dumps(extracted_json, ensure_ascii=False)}"
+
+    if extracted_json:  # Only include JSON data if it's available
+        return f"{instruction[language]}\n\nUser asked: {question}\n\nJSON data:\n{json.dumps(extracted_json, ensure_ascii=False)}"
     else:
         return f"{instruction[language]}\n\nUser asked: {question}"
+
 
 def search_json(query):
     results = []
@@ -87,64 +84,41 @@ def play_audio(path):
     with open(path, "rb") as audio_file:
         audio_bytes = audio_file.read()
         b64 = base64.b64encode(audio_bytes).decode()
-        st.markdown(f'<audio controls><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
+        st.markdown(f'<audio controls autoplay><source src="data:audio/mp3;base64,{b64}" type="audio/mp3"></audio>', unsafe_allow_html=True)
 
-# ========================== UI ==========================
-st.markdown('<div style="font-size:30px;font-weight:bold;color:#075985;">🩺 Emergency First-Aid Assistant</div>', unsafe_allow_html=True)
+# ========================== Custom CSS ==========================
+st.markdown("""
+    <style>
+        .title { font-size: 30px; font-weight: bold; color: #075985; }
+        .section { font-size: 22px; color: #0f172a; margin-top: 30px; }
+        .label { font-weight: bold; font-size: 18px; }
+        .json-box { background-color: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
+    </style>
+""", unsafe_allow_html=True)
+
+# ========================== UI Layout ==========================
+st.markdown('<div class="title">🩺 Emergency First-Aid Assistant</div>', unsafe_allow_html=True)
 st.write("Ask your emergency question in **English or Urdu**. You can use voice or type your query.")
 
 with st.expander("🔧 Input Options"):
     input_mode = st.radio("Choose input method:", ["🎤 Voice", "⌨️ Text"], horizontal=True)
 
 user_query = ""
-
-# 🎤 Voice Mode
 if input_mode == "🎤 Voice":
-    st.write("🎙️ Click below to record your voice")
+    audio_data = st.file_uploader("Upload a WAV voice file:", type=["wav"])
+    if audio_data:
+        with st.spinner("Transcribing..."):
+            user_query = transcribe_audio(audio_data)
+            if user_query:
+                st.success(f"📢 Detected: {user_query}")
+            else:
+                st.error("❌ Could not understand the audio. Please try again.")
+else:
+    user_query = st.text_input("Type your emergency question:")
 
-    class AudioProcessor(AudioProcessorBase):
-        def __init__(self):
-            self.audio_data = b""
+# ========================== Main Processing ==========================
 
-        def recv(self, frame):
-            audio = frame.to_ndarray()
-            self.audio_data += audio.tobytes()
-            return frame
-
-    ctx = webrtc_streamer(
-        key="voice",
-        mode=WebRtcMode.SENDONLY,
-        audio_receiver_size=256,
-        rtc_configuration={},
-        media_stream_constraints={"audio": True, "video": False},
-        audio_processor_factory=AudioProcessor,
-    )
-
-    if ctx.state.playing:
-        if ctx.audio_processor:
-            audio_bytes = ctx.audio_processor.audio_data
-            if audio_bytes:
-                with st.spinner("🧠 Transcribing your voice..."):
-                    # Save as WAV
-                    wav_buffer = io.BytesIO()
-                    with wave.open(wav_buffer, "wb") as wf:
-                        wf.setnchannels(1)
-                        wf.setsampwidth(2)
-                        wf.setframerate(16000)
-                        wf.writeframes(audio_bytes)
-
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                        f.write(wav_buffer.getvalue())
-                        temp_wav_path = f.name
-
-                    user_query = transcribe_audio(temp_wav_path)
-
-                    if user_query:
-                        st.success(f"📢 Detected: {user_query}")
-                    else:
-                        st.error("❌ Could not understand the audio.")
-
-# ========================== Processing ==========================
+# Initialize variables
 json_match = []
 lang = ""
 prompt = ""
@@ -159,25 +133,31 @@ if st.button("🚑 Get Emergency Help") and user_query:
         ai_output = generate_answer(prompt)
         audio_file = text_to_audio(ai_output, lang)
 
+
+    # Show emergency data only if match found
     if json_match:
-        st.markdown('<h3>📄 Emergency Information</h3>', unsafe_allow_html=True)
-        st.markdown('<div style="background-color:#f8fafc;padding:10px;border-radius:8px;border:1px solid #e2e8f0;">', unsafe_allow_html=True)
+        st.markdown('<div class="section">📄 Emergency Information</div>', unsafe_allow_html=True)
+        st.markdown('<div class="json-box">', unsafe_allow_html=True)
+
         for item in json_match:
-            for key, value in item.items():
-                if isinstance(value, (dict, list)):
-                    st.markdown(f"**{key.replace('_', ' ').title()}**")
-                    st.code(json.dumps(value, indent=4, ensure_ascii=False), language="json")
-                else:
-                    st.markdown(f"**{key.replace('_', ' ').title()}**: {value}")
+            if isinstance(item, dict):
+                for key, value in item.items():
+                    if isinstance(value, (dict, list)):
+                        st.markdown(f"**{key.capitalize().replace('_', ' ')}:**")
+                        st.code(json.dumps(value, indent=4, ensure_ascii=False), language="json")
+                    else:
+                        st.markdown(f"**{key.capitalize().replace('_', ' ')}:** {value}")
+            else:
+                st.markdown(f"- {item}")
+
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Show AI Guidance
-    st.markdown('<h3>☤ Emergency First Aid Guidance</h3>', unsafe_allow_html=True)
-    direction = "rtl" if lang == "urdu" else "ltr"
-    align = "right" if lang == "urdu" else "left"
-    st.markdown(f'<div style="direction:{direction};text-align:{align};background:#f1f5f9;padding:10px;border-radius:8px;">{ai_output}</div>', unsafe_allow_html=True)
 
-    # Voice Output
-    if audio_file:
-        st.markdown('<h3>🔊 Voice Output</h3>', unsafe_allow_html=True)
-        play_audio(audio_file)
+ 
+    # AI answer section
+    st.markdown('<div class="section">☤ Emergency First Aid Guidance</div>', unsafe_allow_html=True)
+    st.markdown(f"<div class='json-box'>{ai_output}</div>", unsafe_allow_html=True)
+
+    # Voice output
+    st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
+    play_audio(audio_file)
