@@ -123,13 +123,13 @@ if st.button("🚑 Get Emergency Help") and user_query:
         prompt = build_prompt(user_query, json_match, lang)
         ai_output = generate_answer(prompt)
         audio_file = text_to_audio(ai_output, lang)
-
-if json_match:
-    st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
-    st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
-
-    st.markdown('<div class="section">🤖 Assistant Guidance</div>', unsafe_allow_html=True)
-    st.markdown(f"<div class='json-box'>{ai_output}</div>", unsafe_allow_html=True)
-
-    st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
-    play_audio(audio_file)
+        
+        if json_match:
+            st.markdown('<div class="section">📄 Matched Emergency Info (from JSON)</div>', unsafe_allow_html=True)
+            st.code(json.dumps(json_match, ensure_ascii=False, indent=2), language="json")
+            
+            st.markdown('<div class="section">🤖 Assistant Guidance</div>', unsafe_allow_html=True)
+            st.markdown(f"<div class='json-box'>{ai_output}</div>", unsafe_allow_html=True)
+            
+            st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
+            play_audio(audio_file)
