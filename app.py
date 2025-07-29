@@ -19,8 +19,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.title("🚑 AidMate – Smart First Aid Emergency Assistant")
-
 API_KEY = "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"
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 JSON_FILE = "data.json"
