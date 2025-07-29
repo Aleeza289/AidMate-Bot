@@ -160,7 +160,7 @@ st.markdown("""
 # ========================== Gradient Title ==========================
 
 st.markdown("""
-<div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;'>
+<div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;'>
     <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 180px;' />
     <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
 </div>
