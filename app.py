@@ -13,7 +13,7 @@ st.set_page_config(page_title="AidMate Emergency First-Aid Assistant", layout="c
 st.markdown(
     """
     <div style="text-align: center;">
-        <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" width="150">
+        <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" width="250">
     </div>
     """,
     unsafe_allow_html=True
@@ -136,7 +136,7 @@ def play_audio(path):
 
 # ========================== Sidebar ==========================
 with st.sidebar:
-    st.image("https://aidmate-app.netlify.app/AidMate-removebg-preview.png", width=100)
+    st.image("https://aidmate-app.netlify.app/AidMate-removebg-preview.png", width=200)
     st.markdown("### 🩺 AidMate Assistant")
     st.markdown("Ask questions like:")
     st.markdown("- Burn treatment\n- Nose bleeding\n- Fracture steps")
