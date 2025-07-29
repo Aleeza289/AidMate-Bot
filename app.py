@@ -5,7 +5,7 @@ from langdetect import detect
 
 # ========================== Config ==========================
 st.set_page_config(page_title="Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
-API_KEY = "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"
+API_KEY = "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"
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 JSON_FILE = "data.json"
 
