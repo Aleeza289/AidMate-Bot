@@ -1,15 +1,5 @@
 streamlit
 groq
-requests
-gTTS
+gtts
 langdetect
 SpeechRecognition
-pydub
-PyAudio
-tiktoken==0.6.0
-pdfplumber
-python-docx
-PyPDF2
-sentence-transformers
-faiss-cpu
-langcodes
