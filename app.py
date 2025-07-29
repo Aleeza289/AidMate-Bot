@@ -134,4 +134,3 @@ if st.button("🚑 Get Emergency Help") and user_query:
             
             st.markdown('<div class="section">🔊 Voice Output</div>', unsafe_allow_html=True)
             play_audio(audio_file)
-
