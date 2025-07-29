@@ -183,7 +183,7 @@ st.markdown("""
 
 st.markdown("""
 <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;'>
-    <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 60px;' />
+    <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 100px;' />
     <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
 </div>
 """, unsafe_allow_html=True)
