@@ -217,7 +217,7 @@ if ai_output:
 st.markdown("""
     <hr style='margin-top:40px;'>
     <p style='text-align: center; font-size: 14px; color: gray;'>
-        © 2025 AidMate #| Made by Aleeza
+        © 2025 AidMate | Made by Aleeza
     </p>
 """, unsafe_allow_html=True)
 
