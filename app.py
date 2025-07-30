@@ -166,7 +166,6 @@ st.markdown("""
 # </div>
 # """, unsafe_allow_html=True)
 
-
 st.markdown("""
 <div style='
     display: flex; 
@@ -189,7 +188,6 @@ st.markdown("""
 
 </div>
 """, unsafe_allow_html=True)
-
 
 # ========================== Input UI ==========================
 st.write("Ask your emergency question in **English or Urdu**.")
