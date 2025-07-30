@@ -159,32 +159,11 @@ st.markdown("""
 
 # ========================== Gradient Title ==========================
 
-# st.markdown("""
-# <div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;'>
-#     <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 180px;' />
-#     <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
-# </div>
-# """, unsafe_allow_html=True)
-
 st.markdown("""
-    <div style="display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 20px; flex-wrap: nowrap; margin-bottom: 20px;">
-        
-        <!-- Logo block -->
-        <div style="flex-shrink: 0;">
-            <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" alt="AidMate Logo" style="height: 110px;">
-        </div>
-        
-        <!-- Text block -->
-        <div style="flex-grow: 1;">
-            <h2 style="color: black; font-size: 26px; margin: 0; font-weight: 600;">
-                AidMate – Smart First Aid Emergency Assistant
-            </h2>
-            <p style="margin-top: 6px; font-size: 16px; color: #374151;">
-                Ask your emergency question below in <strong>English</strong> or <strong>Urdu</strong>.
-            </p>
-        </div>
-    
-    </div>
+<div style='display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px;'>
+    <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 180px;' />
+    <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
+</div>
 """, unsafe_allow_html=True)
 
 
