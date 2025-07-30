@@ -52,4 +52,3 @@
 | `gTTS`           | Voice output playback                   |
 | `langdetect`     | Language detection (English/Urdu)       |
 
-
