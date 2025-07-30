@@ -165,29 +165,25 @@ st.markdown("""
 #     <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
 # </div>
 # """, unsafe_allow_html=True)
-
 st.markdown("""
-<div style='
-    display: flex; 
-    align-items: center; 
-    gap: 20px; 
-    flex-wrap: wrap; 
-    justify-content: center;
-    margin-bottom: 30px;
-'>
-
-    <div style='flex-shrink: 0;'>
-        <img src='https://aidmate-app.netlify.app/AidMate-removebg-preview.png' alt='AidMate Logo' style='height: 180px;' />
+<div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
+    
+    <!-- Logo on Left -->
+    <div style="flex-shrink: 0;">
+        <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" alt="AidMate Logo" style="height: 150px;">
     </div>
 
-    <div style='flex-grow: 1; min-width: 250px; text-align: left;'>
-        <h2 style='color: black; font-size: 26px; margin: 0;'>
+    <!-- Text on Right -->
+    <div style="flex-grow: 1; min-width: 250px;">
+        <h2 style="color: black; font-size: 26px; margin: 0; text-align: left;">
             AidMate – Smart First Aid Emergency Assistant
         </h2>
     </div>
 
 </div>
 """, unsafe_allow_html=True)
+
+
 
 # ========================== Input UI ==========================
 st.write("Ask your emergency question in **English or Urdu**.")
