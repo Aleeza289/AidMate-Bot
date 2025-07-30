@@ -166,22 +166,22 @@ st.markdown("""
 # </div>
 # """, unsafe_allow_html=True)
 
-
-import streamlit as st
-
-st.set_page_config(layout="wide")
-
 st.markdown("""
-<div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
-    
+<div style="display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; column-gap: 20px; margin-bottom: 30px;">
+
+    <!-- Logo on the left -->
     <div style="flex-shrink: 0;">
-        <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" alt="AidMate Logo" style="height: 150px;">
+        <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" alt="AidMate Logo" style="height: 120px;">
     </div>
 
+    <!-- Text on the right -->
     <div style="flex-grow: 1; min-width: 250px;">
-        <h2 style="color: black; font-size: 26px; margin: 0; text-align: left;">
+        <h2 style="color: black; font-size: 28px; margin: 0; font-weight: 600;">
             AidMate – Smart First Aid Emergency Assistant
         </h2>
+        <p style="margin-top: 8px; color: #475569; font-size: 16px;">
+            Ask your emergency question below in <strong>English</strong> or <strong>Urdu</strong>.
+        </p>
     </div>
 
 </div>
