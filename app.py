@@ -165,15 +165,19 @@ st.markdown("""
 #     <h2 style='color: black; font-weight: bold; font-size: 24px; margin: 0;'>AidMate – Smart First Aid Emergency Assistant</h2>
 # </div>
 # """, unsafe_allow_html=True)
+
+
+import streamlit as st
+
+st.set_page_config(layout="wide")
+
 st.markdown("""
 <div style="display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px; margin-bottom: 30px;">
     
-    <!-- Logo on Left -->
     <div style="flex-shrink: 0;">
         <img src="https://aidmate-app.netlify.app/AidMate-removebg-preview.png" alt="AidMate Logo" style="height: 150px;">
     </div>
 
-    <!-- Text on Right -->
     <div style="flex-grow: 1; min-width: 250px;">
         <h2 style="color: black; font-size: 26px; margin: 0; text-align: left;">
             AidMate – Smart First Aid Emergency Assistant
@@ -182,7 +186,6 @@ st.markdown("""
 
 </div>
 """, unsafe_allow_html=True)
-
 
 
 # ========================== Input UI ==========================
