@@ -51,6 +51,5 @@
 | `JSON`           | Base data for emergency conditions      |
 | `gTTS`           | Voice output playback                   |
 | `langdetect`     | Language detection (English/Urdu)       |
-| `base64`         | Embeds audio playback in browser        |
 
 
