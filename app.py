@@ -9,7 +9,7 @@ import base64
 
 # ========================== Config ==========================
 st.set_page_config(page_title="AidMate Emergency First-Aid Assistant", layout="centered", page_icon="🩺")
-API_KEY = st.secrets("api_key")
+API_KEY = st.secrets["api_key"]
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 JSON_FILE = "data.json"
 
