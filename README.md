@@ -1,7 +1,8 @@
 # 🩺 AidMate-Bot  
 ### Emergency First-Aid Assistant App
 
-**Application:**   https://aidmate-bot.streamlit.app/
+**Application:**
+https://aidmate-bot.streamlit.app/
 
 **Presentation:**
 https://drive.google.com/file/d/1ZMUXUXs87XKbXwv38wHPLb1WHpG_JJL3/view?usp=drivesdk
